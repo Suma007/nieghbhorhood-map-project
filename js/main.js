@@ -1,4 +1,13 @@
-var	location= [
+var map;
+function initMap() {
+   
+   map= new google.maps.Map(document.getElementById('map'),{
+    center:{lat:8.524139, lng:76.936638},
+    zoom:15
+   });
+   addmarker();
+}
+var	locations= [
 		{
 			pos:{lat: 8.5583,
 			lng: 76.8812},
@@ -32,34 +41,44 @@ var	location= [
 
 var viewModel = function() {
 	var self = this;
-	var locations=ko.observableArray('');
+	var locat=ko.observableArray([]);
 	
-	for(var i=0;i<location.length;i++){
-	locations.push(location[i].title);
+	for(var i=0;i<locations.length;i++){
+	locat[i]=locations[i].title;
+	 console.log(locations[i].title);
 	}
-}
+};
+
+var markers=[];
+var bound= new google.maps.LatLngBounds();
+var newInfo= new google.maps.Infowindow();
 function addmarker() {
-		for( i=0;i<location.length;i++){
-			var pos=location[i].pos;
-			var title= location[i].title;
+		for( i=0;i<locations.length;i++){
+			var pos=locations[i].pos;
+			var title= locations[i].title;
 			var marker= new google.maps.Marker({
 				position: pos,
 				map: map,
 				title: title,
 				animation: google.maps.animation.DROP,
-				id: i
+				id: i,
+				visible: true
 			});
 			markers.push(marker);
+			bound.position(marker.position);
+			marker.click(function () {
+				// body...
+				populateInfoMarker(this,newInfo);
+			});
 
 		}
+		map.fitbounds(bound);
 	}
-var map;
-function initMap() {
-   
-   map= new google.maps.Map(document.getElementById('map'),{
-    center:{lat:8.524139, lng:76.936638},
-    zoom:15
-   });
-   addmarker();
+function populateInfoMarker(self,newInfo) {
+	// body...
+	self.content= 'hjh',
+	Infowindow.open(map,self);
 }
+
+
 ko.applyBindings(new viewModel());
