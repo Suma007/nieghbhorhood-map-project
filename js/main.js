@@ -1,6 +1,4 @@
-
-var model = function (){
-	location= [
+var	location= [
 		{
 			pos:{lat: 8.5583,
 			lng: 76.8812},
@@ -30,31 +28,29 @@ var model = function (){
 			pos:{lat: 8.5086,
 			lng: 76.9657},
 			title: 'Vellayambalam'
-		}],
-	loc= ['Technopark','Palayam','Thampanoor','Vellayambalam','Kovalam','Shanghumugam']
-};
+		}];
+
 var viewModel = function() {
 	var self = this;
-	var locations=ko.observableArray([]);
-	var mo= new model();
-	for(var i=0;i<mo.location.length;i++){
-		locations.push(mo.location[i].title);
+	var locations=ko.observableArray('');
+	
+	for(var i=0;i<location.length;i++){
+	locations.push(location[i].title);
 	}
 }
-var marker ={};
 function addmarker() {
-	var mo= new model();
-		for( i=0;i<mo.location.length;i++){
-			var pos=mo.location[i].pos;
-			var title= mo.location[i].title;
-			var m= new google.maps.Marker({
+		for( i=0;i<location.length;i++){
+			var pos=location[i].pos;
+			var title= location[i].title;
+			var marker= new google.maps.Marker({
 				position: pos,
 				map: map,
 				title: title,
 				animation: google.maps.animation.DROP,
 				id: i
 			});
-			marker.push(m);
+			markers.push(marker);
+
 		}
 	}
 var map;
