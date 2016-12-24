@@ -35,28 +35,35 @@ var model = function (){
 };
 var viewModel = function() {
 	var self = this;
-	var marker=ko.observableArray([]);
 	var locations=ko.observableArray([]);
 	var mo= new model();
-	locations.push(mo.location);
-	console.log(locations);
-	var i=0;
-	function addmarker() {
-		// body...
-		for( i=0;i<locations.length;i++){
-			var pos=locations[i].pos;
-			var title= locations[i].title;
-		var m= new google.maps.Marker({
-			position: pos,
-			map: map,
-			title: title,
-			animation: google.maps.animation.DROP,
-			id: i
-		});
-		marker.push(m);
+	for(var i=0;i<mo.location.length;i++){
+		locations.push(mo.location[i].title);
 	}
+}
+var marker ={};
+function addmarker() {
+	var mo= new model();
+		for( i=0;i<mo.location.length;i++){
+			var pos=mo.location[i].pos;
+			var title= mo.location[i].title;
+			var m= new google.maps.Marker({
+				position: pos,
+				map: map,
+				title: title,
+				animation: google.maps.animation.DROP,
+				id: i
+			});
+			marker.push(m);
+		}
 	}
-
-
+var map;
+function initMap() {
+   
+   map= new google.maps.Map(document.getElementById('map'),{
+    center:{lat:8.524139, lng:76.936638},
+    zoom:15
+   });
+   addmarker();
 }
 ko.applyBindings(new viewModel());
