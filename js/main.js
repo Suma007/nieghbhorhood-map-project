@@ -5,7 +5,8 @@ function initMap() {
     center:{lat:8.524139, lng:76.936638},
     zoom:15
    });
-   
+   var newInfo= new google.maps.InfoWindow();
+
    addmarker();
 }
 var	locations= [
@@ -39,12 +40,12 @@ var	locations= [
 			lng: 76.9657},
 			title: 'Vellayambalam'
 		}];
-
+var locat=[];
 var viewModel = function() {
-	this.locat=ko.observableArray([]);
+	this.locat=ko.observableArray();
 	for(var i=0;i<locations.length;i++){
 	locat.push(locations[i].title);
-	 console.log(locations[i].title);
+	 console.log(locat[i]);
 	}
 };
 
@@ -52,7 +53,7 @@ var markers=[];
 
 function addmarker() {
 	var bound= new google.maps.LatLngBounds();
-var newInfo= new google.maps.InfoWindow();
+	
 		for( i=0;i<locations.length;i++){
 			var pos=locations[i].pos;
 			var title= locations[i].title;
@@ -76,8 +77,8 @@ var newInfo= new google.maps.InfoWindow();
 	}
 function populateInfoMarker(self,newInfo) {
 	// body...
-	self.content= 'hjh',
-	InfoWindow.open(map,self);
+	infowindow.setContent();
+	infowindow.open(map,self);
 }
 
 
