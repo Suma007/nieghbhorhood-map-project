@@ -39,7 +39,7 @@
         <li class="active"><a href="#">Home <span class="sr-only"></span></a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lis <span class="caret"></span></a>
-          <ul class="dropdown-menu" data-bind="foreach: locat" multiple="true" size="7" >
+          <ul class="dropdown-menu" data-bind="foreach: this.locat" multiple="true" size="7" >
             <li data-bind="text: title"></li>
           </ul>
         </li>
@@ -57,8 +57,9 @@
 	<script type="text/javascript" src="js/jQuery.js"></script>
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
   <script type="text/javascript" src="js/knockout-3.4.1.js"></script>
-  <script type="text/javascript" src="js/main.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCOgFFaPBZrnWy1pT6plIk6ezCfAv6L0aY&v=3&callback=initMap"></script>
+  <script type="text/javascript" src="js/main.js"></script>
+  
      
 </body>
 </html>
