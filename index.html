@@ -17,6 +17,10 @@
 			top: 50px;
 			margin-right: 70px; 
 		}
+    .backgnd {
+      opacity: 0.2;
+
+    }
 	</style>
 </head>
 <body>
@@ -39,11 +43,11 @@
         <li class="active"><a href="#">Home <span class="sr-only"></span></a></li>
         <form class="navbar-form navbar-left">
           <div class="form-group">
-        <li class="dropdown" data-bind=" template: { name:'title' foreach: 'locat'}">
-          <input type="text" class="dropdown-toggle form-control" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" placeholder="Select" data-bind="value: query valueUpdate: 'afterkeydown'">List
+        <li class="dropdown" data-bind=" template: { name:'title' foreach: locat}">
+          <input type="text" class="dropdown-toggle form-control" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" placeholder="Select" data-bind="textInput: query">List
            <span class="caret"></span></a>
-          <ul class="dropdown-menu" >
-            <li role="button" data-bind="text: name" id="list-places"></li>
+          <ul class="dropdown-menu" data-bind="foreach: filteredItems" >
+            <li role="button" data-bind="text: $data, click: $parent.listClicker " id="list-places"></li>
           </ul>
         </li>
       </ul>
@@ -58,6 +62,7 @@
   <script type="text/javascript" src="js/knockout-3.4.1.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCOgFFaPBZrnWy1pT6plIk6ezCfAv6L0aY&v=3&callback=initMap" onerror="googleError()"></script>
   <script type="text/javascript" src="js/main.js"></script>
+  <script type="text/javascript" src="js/map.js"></script>
   
      
 </body>

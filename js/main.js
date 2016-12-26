@@ -1,157 +1,105 @@
-var map;
-//var newInfo= new google.maps.InfoWindow();
-function initMap() {
-   
-   map= new google.maps.Map(document.getElementById('map'),{
-    center:{lat:8.524139, lng:76.936638},
-    zoom:15
-   });
-   var newInfo= new google.maps.InfoWindow();
 
-   addmarker();
-}
-var	locations= [
-		{
-			pos:{lat: 8.5583,
-			lng: 76.8812},
-			title: 'Technopark'
-		},
-		{
-			pos:{lat: 8.4004,
-			lng: 76.9787},
-			title: 'Kovalam'
-		},
-		{
-			pos:{lat: 8.4784498,
-			lng: 76.911906},
-			title:'Shanghumugam'
-		},
-		{
-			pos:{lat: 8.5028,
-			lng: 76.9513},
-			title: 'Palayam'
-		},
-		{
-			pos:{lat: 8.4909,
-			lng: 76.9527},
-			title: 'Thampanoor'
-		},
-		{
-			pos:{lat: 8.5086,
-			lng: 76.9657},
-			title: 'Vellayambalam'
-		}];
-var markers=[];
-var locat=[];
-var query;
-var viewModel = function() {
-	var self= this;
-	self.locat=ko.observableArray();
-	for(var i=0;i<locations.length;i++){
-		self.locat.push(locations[i].title);
-		//self.locat.push('pos:'+locations[i].pos);
-	}
-	
-	//console.log(this.locat);
-	self.query=ko.observable('');
-	
+var locations = [{
+        pos: {
+            lat: 8.5583,
+            lng: 76.8812
+        },
+        title: 'Technopark',
+        place_id: 'ChIJg77xrPu-BTsREXn5q5pAFtQ'
 
-  //filter the items using the filter text
-	self.filteredItems = ko.computed(function() {
-    var filter = this.locat.toLowerCase();
-    if (!filter) {
-        return this.locat();
-    } else {
-        return ko.utils.arrayFilter(this.locat(), function(locat) {
-            return ko.utils.stringStartsWith(locat.title().toLowerCase(), filter);
-        });
+    },
+    {
+        pos: {
+            lat: 8.4004,
+            lng: 76.9787
+        },
+        title: 'Kovalam',
+        place_id: 'ChIJZewZCgmlBTsRrGK3wFsxf7Y'
+    },
+    {
+        pos: {
+            lat: 8.4784498,
+            lng: 76.911906
+        },
+        title: 'Shanghumugam',
+        place_id: 'ChIJB_zc3oO8BTsRmJDxZTAgmcg'
+    },
+    {
+        pos: {
+            lat: 8.5028,
+            lng: 76.9513
+        },
+        title: 'Palayam',
+        place_id: 'ChIJm80qrr67BTsR4heEcbyBbE0'
+    },
+    {
+        pos: {
+            lat: 8.4909,
+            lng: 76.9527
+        },
+        title: 'Thampanoor',
+        place_id: 'ChIJ6akR5KW7BTsRYnHfM-clGtk'
+    },
+    {
+        pos: {
+            lat: 8.5086,
+            lng: 76.9657
+        },
+        title: 'Vellayambalam',
+        place_id: 'ChIJ3fyLN827BTsRstmaHAF_rBM'
     }
-}, viewModel);
-};
-var view= new viewModel();
-view.query.subscribe(view.search);
+];
 
+var locat = [];
+var query;
 
+var viewModel = function() {
 
-function addmarker() {
-	var bound= new google.maps.LatLngBounds();
-	
-		for( i=0;i<locations.length;i++){
-			var pos=locations[i].pos;
-			var title= locations[i].title;
-			var marker= new google.maps.Marker({
-				position: pos,
-				map: map,
-				title: title,
-				animation: google.maps.Animation.DROP,
-				id: i,
-				visible: true,
-				url: ''
-			});
-			markers.push(marker);
-			bound.extend(marker.position);
-			var newInfo= new google.maps.InfoWindow();
+    var self = this;
+    self.locat = ko.observableArray();
+    for (var i = 0; i < locations.length; i++) {
+        self.locat.push(locations[i].title);
+        console.log(locat[i]);
+    }
 
-			marker.addListener('click',function () {
-				// body...
-				console.log(this.title);
-				
-				populateInfoWindow(this,newInfo)
-			});
+    //console.log(this.locat);
+    self.query = ko.observable('');
 
-		}
-		map.fitBounds(bound);
-		markers.forEach(function (marker) {
-			// body...
-			addContentwiki(marker);
-		});
-	}
-function addContentwiki(marker) {
-	// body...
-	
-	var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.title + '&format=json&callback=wikiCallback';   
-    var timeout=setTimeout(function(){
-        alert("EROORRR WIKI NOT FOUND");
-    },8000);
-    $.ajax({
-        url: wikiUrl,
-        dataType: 'jsonp',
-        success: function(response) {
-            // do something with data
-             marker.url=response[3][0];
-            
-                
-               // marker.url="https://en.wikipedia.org/"+sd;
-                //console.log(url);
-                clearTimeout(timeout);
-            }
-        
+    self.listClicker = function(locationInfo) {
+        google.maps.event.trigger(locationInfo.marker, 'click')
+    };
+    //filter the items using the filter text
+    self.filteredItems = ko.computed(function() {
+        //if no value has been entered, just return the observable array and set the marker to visable
+        if (!self.query()) {
+            // loop through locations
+            self.locat().forEach(function(location) {
+                // if marker poperty exists its sets the visibility to true. It won't exist on load, but it WILL exist after the page has loaded and you have typed in the filter box and then cleared it
+                if (location.marker) {
+                    location.marker.setVisible(true);
+                }
+            });
+            return self.locat();
+        } else {
+            //the variable filter is holding the results of the user input into filter and then converting it to all lower case
+            var filter = self.query().toLowerCase();
+            //returns an array that contains only those items in the array that is being filtered that pass the true/false test inside the filter
+            return ko.utils.arrayFilter(self.locations(), function(item) {
+                var result = item.name.toLowerCase().indexOf(query);
+                //If there were no matches between the filter and the list, hide the marker
+                if (result < 0) {
+                    item.marker.setVisible(false);
+                    //If there were matches, show the marker
+                } else {
+                    item.marker.setVisible(true);
+                }
+                //Based on how indexOf works, if you have a match at all, the result must be 0 or greater becuase 0 is the lowest index number.
+                //So if you have any result, it will be greater than -1 and so returns true. Otherwise it returns false
+                return item.name.toLowerCase().indexOf(query) > -1;
+            });
+        }
     });
-}
+};
+var view = new viewModel();
+ko.applyBindings(view);
 
-ko.applyBindings(new viewModel());
-   var newInfo= new google.maps.InfoWindow();
-
-function populateInfoWindow(marker, newInfo) {
-		newInfo.marker=marker;
-		if(marker.url!=undefined){
-			var content='<div> To know more about<h2>' + marker.title + '</h2> <div> Look: <a href="' + marker.url + '">' + marker.url + '</a></div>';
-			newInfo.setContent(content);
-		}   
-		else
-			newInfo.setContent("INfo not available");
-        newInfo.open(map, marker);
-        map.setZoom(18);
-        map.setCenter(marker.position);
-}
-
-//populating info window based on click in the ordered list item
-$('#idListPlaces').click(function (e) {
-    var n = $(e.target).index();
-    populateInfoWindow(markers[n], largeInfowindow);
-});
-
-function googleError() {
-	// body...
-	alert("CANNOT LOAD MAPS");
-}
