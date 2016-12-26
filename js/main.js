@@ -1,4 +1,5 @@
 var map;
+//var newInfo= new google.maps.InfoWindow();
 function initMap() {
    
    map= new google.maps.Map(document.getElementById('map'),{
@@ -44,36 +45,31 @@ var markers=[];
 var locat=[];
 var query;
 var viewModel = function() {
-	this.locat=ko.observableArray();
+	var self= this;
+	self.locat=ko.observableArray();
 	for(var i=0;i<locations.length;i++){
-		this.locat.push(locations[i].title);
-		//this.locat.push(locations[i].pos);
+		self.locat.push(locations[i].title);
+		//self.locat.push('pos:'+locations[i].pos);
 	}
-	//this.locat= ko.observableArray();
-	//this.locat.push(locations);
-	console.log(this.locat);
-	this.query=ko.observable('');
-	/*function addM(index){
-		for(i=0;i<locations.length;i++){
-			if(i===$index){
-				marker[i].visible= true;
-			}
-		}
-	}*/
+	
+	//console.log(this.locat);
+	self.query=ko.observable('');
+	
 
-  this.search= function(value) {
-    // remove all the current beers, which removes them from the view
-    viewModel.locat.removeAll();
-
-    for(var x in locat) {
-      if(locat[x].name.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
-        viewModel.locat.push(locat[x]);
-      }
+  //filter the items using the filter text
+	self.filteredItems = ko.computed(function() {
+    var filter = this.locat.toLowerCase();
+    if (!filter) {
+        return this.locat();
+    } else {
+        return ko.utils.arrayFilter(this.locat(), function(locat) {
+            return ko.utils.stringStartsWith(locat.title().toLowerCase(), filter);
+        });
     }
-  }
+}, viewModel);
 };
-
-viewModel.query.subscribe(viewModel.search);
+var view= new viewModel();
+view.query.subscribe(view.search);
 
 
 
@@ -89,48 +85,73 @@ function addmarker() {
 				title: title,
 				animation: google.maps.Animation.DROP,
 				id: i,
-				visible: false
+				visible: true,
+				url: ''
 			});
 			markers.push(marker);
 			bound.extend(marker.position);
+			var newInfo= new google.maps.InfoWindow();
+
 			marker.addListener('click',function () {
 				// body...
-				populateInfoMarker(this,newInfo);
+				console.log(this.title);
+				
+				populateInfoWindow(this,newInfo)
 			});
 
 		}
 		map.fitBounds(bound);
+		markers.forEach(function (marker) {
+			// body...
+			addContentwiki(marker);
+		});
 	}
-function addContentwiki(city) {
+function addContentwiki(marker) {
 	// body...
-	var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + city + '&format=json&callback=wikiCallback';   
+	
+	var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.title + '&format=json&callback=wikiCallback';   
     var timeout=setTimeout(function(){
-        $wikiElem.text("EROORRR");
+        alert("EROORRR WIKI NOT FOUND");
     },8000);
     $.ajax({
         url: wikiUrl,
         dataType: 'jsonp',
         success: function(response) {
             // do something with data
-            var resp=response[1];
-            for(var i=0;i<resp.length;i++){ 
-                var sd=resp[i];
-                var url="https://en.wikipedia.org/"+sd;
-                console.log(url);
-                $wikiElem.append('<li><a href="'+url+'">'+sd+'</a></li>');
-            };
-        clearTimeout(timeout);
-        }
+             marker.url=response[3][0];
+            
+                
+               // marker.url="https://en.wikipedia.org/"+sd;
+                //console.log(url);
+                clearTimeout(timeout);
+            }
+        
     });
 }
-function addPlaces(){
-
-}
-function populateInfoMarker(self,newInfo) {
-	// body...
-	infowindow.setContent();
-	infowindow.open(map,self);
-}
-
 
 ko.applyBindings(new viewModel());
+   var newInfo= new google.maps.InfoWindow();
+
+function populateInfoWindow(marker, newInfo) {
+		newInfo.marker=marker;
+		if(marker.url!=undefined){
+			var content='<div> To know more about<h2>' + marker.title + '</h2> <div> Look: <a href="' + marker.url + '">' + marker.url + '</a></div>';
+			newInfo.setContent(content);
+		}   
+		else
+			newInfo.setContent("INfo not available");
+        newInfo.open(map, marker);
+        map.setZoom(18);
+        map.setCenter(marker.position);
+}
+
+//populating info window based on click in the ordered list item
+$('#idListPlaces').click(function (e) {
+    var n = $(e.target).index();
+    populateInfoWindow(markers[n], largeInfowindow);
+});
+
+function googleError() {
+	// body...
+	alert("CANNOT LOAD MAPS");
+}
