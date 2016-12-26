@@ -40,16 +40,42 @@ var	locations= [
 			lng: 76.9657},
 			title: 'Vellayambalam'
 		}];
+var markers=[];
 var locat=[];
+var query;
 var viewModel = function() {
 	this.locat=ko.observableArray();
 	for(var i=0;i<locations.length;i++){
-	locat.push(locations[i].title);
-	 console.log(locat[i]);
+		this.locat.push(locations[i].title);
+		//this.locat.push(locations[i].pos);
 	}
+	//this.locat= ko.observableArray();
+	//this.locat.push(locations);
+	console.log(this.locat);
+	this.query=ko.observable('');
+	/*function addM(index){
+		for(i=0;i<locations.length;i++){
+			if(i===$index){
+				marker[i].visible= true;
+			}
+		}
+	}*/
+
+  this.search= function(value) {
+    // remove all the current beers, which removes them from the view
+    viewModel.locat.removeAll();
+
+    for(var x in locat) {
+      if(locat[x].name.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+        viewModel.locat.push(locat[x]);
+      }
+    }
+  }
 };
 
-var markers=[];
+viewModel.query.subscribe(viewModel.search);
+
+
 
 function addmarker() {
 	var bound= new google.maps.LatLngBounds();
@@ -63,7 +89,7 @@ function addmarker() {
 				title: title,
 				animation: google.maps.Animation.DROP,
 				id: i,
-				visible: true
+				visible: false
 			});
 			markers.push(marker);
 			bound.extend(marker.position);
@@ -75,6 +101,31 @@ function addmarker() {
 		}
 		map.fitBounds(bound);
 	}
+function addContentwiki(city) {
+	// body...
+	var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + city + '&format=json&callback=wikiCallback';   
+    var timeout=setTimeout(function(){
+        $wikiElem.text("EROORRR");
+    },8000);
+    $.ajax({
+        url: wikiUrl,
+        dataType: 'jsonp',
+        success: function(response) {
+            // do something with data
+            var resp=response[1];
+            for(var i=0;i<resp.length;i++){ 
+                var sd=resp[i];
+                var url="https://en.wikipedia.org/"+sd;
+                console.log(url);
+                $wikiElem.append('<li><a href="'+url+'">'+sd+'</a></li>');
+            };
+        clearTimeout(timeout);
+        }
+    });
+}
+function addPlaces(){
+
+}
 function populateInfoMarker(self,newInfo) {
 	// body...
 	infowindow.setContent();
