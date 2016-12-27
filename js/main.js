@@ -65,9 +65,7 @@ var viewModel = function() {
     //console.log(this.locat);
     self.query = ko.observable('');
 
-    self.listClicker = function(locationInfo) {
-        google.maps.event.trigger(locationInfo.marker, 'click')
-    };
+    
     //filter the items using the filter text
     self.filteredItems = ko.computed(function() {
         //if no value has been entered, just return the observable array and set the marker to visable
@@ -75,8 +73,8 @@ var viewModel = function() {
             // loop through locations
             self.locat().forEach(function(location) {
                 // if marker poperty exists its sets the visibility to true. It won't exist on load, but it WILL exist after the page has loaded and you have typed in the filter box and then cleared it
-                if (location.marker) {
-                    location.marker.setVisible(true);
+                if (locations.marker) {
+                    locations.marker.setVisible(true);
                 }
             });
             return self.locat();
@@ -84,7 +82,7 @@ var viewModel = function() {
             //the variable filter is holding the results of the user input into filter and then converting it to all lower case
             var filter = self.query().toLowerCase();
             //returns an array that contains only those items in the array that is being filtered that pass the true/false test inside the filter
-            return ko.utils.arrayFilter(self.locations(), function(item) {
+            return ko.utils.arrayFilter(self.locat(), function(item) {
                 var result = item.name.toLowerCase().indexOf(query);
                 //If there were no matches between the filter and the list, hide the marker
                 if (result < 0) {

@@ -10,6 +10,7 @@ function initMap() {
     });
     var newInfo = new google.maps.InfoWindow();
     addmarker();
+    
 
 }
 var markers = [];
@@ -104,6 +105,7 @@ function populateInfoWindow(marker, newInfo) {
       map.setZoom(15);
     });
 }
+
 
 
 function googleError() {
