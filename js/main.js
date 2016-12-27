@@ -59,13 +59,13 @@ var viewModel = function() {
     self.locat = ko.observableArray();
     for (var i = 0; i < locations.length; i++) {
         self.locat.push(locations[i].title);
-        console.log(locat[i]);
+        console.log(self.locat()[i]);
     }
 
     //console.log(this.locat);
     self.query = ko.observable('');
 
-    
+   
     //filter the items using the filter text
     self.filteredItems = ko.computed(function() {
         //if no value has been entered, just return the observable array and set the marker to visable
@@ -83,7 +83,7 @@ var viewModel = function() {
             var filter = self.query().toLowerCase();
             //returns an array that contains only those items in the array that is being filtered that pass the true/false test inside the filter
             return ko.utils.arrayFilter(self.locat(), function(item) {
-                var result = item.name.toLowerCase().indexOf(query);
+                var result = item.toLowerCase().indexOf(query);
                 //If there were no matches between the filter and the list, hide the marker
                 if (result < 0) {
                     item.marker.setVisible(false);
