@@ -1,5 +1,5 @@
 var map;
-
+//Initialise Map
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {
@@ -13,6 +13,7 @@ function initMap() {
     
 
 }
+//Add Markers
 function addmarker() {
     var bound = new google.maps.LatLngBounds();
 
@@ -49,20 +50,19 @@ function addmarker() {
     map.setCenter(bound.getCenter());
 }
 
+//Add animation
 function toggleBounce(marker) {
-    //This makes sure that all markers have stopped bouncing first
     for (var i = 0; i < locations.length; i++) {
         locations[i].marker.setAnimation(null);
     };
-    //If the marker is already animated, stop animation
     if (marker.getAnimation() !== null) {
         marker.setAnimation(null);
     } else {
-        //Otherwise, set animation on this marker
         marker.setAnimation(google.maps.Animation.BOUNCE);
     }
 }
 
+//Add Wikipedia content
 function addContentwiki(marker) {
     // body...
 
@@ -89,6 +89,7 @@ function populateInfoWindow(marker, newInfo) {
     newInfo.marker = marker;
     if (marker.url != undefined) {
         content = '<div><h3>' + marker.title + '<br><hr><a href="' + marker.url + '">' + ' Look ' + '</a>';         
+        //Add Streetview
         streetview = '<img class="backgnd" src="http://maps.googleapis.com/maps/api/streetview?size=100x100&location=' + marker.position.lat+ ',' + marker.position.lng + '&key=AIzaSyCOgFFaPBZrnWy1pT6plIk6ezCfAv6L0aY">';
         add= content +'<div> ' + streetview + '</div>';
         newInfo.setContent(add);
@@ -106,9 +107,7 @@ function populateInfoWindow(marker, newInfo) {
     });
 }
 
-
-
-
+//Error
 function googleError() {
     // body...
     alert("CANNOT LOAD MAPS");

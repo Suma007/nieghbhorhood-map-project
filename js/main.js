@@ -1,4 +1,4 @@
-
+//Create locations variable
 var locations = [{
         pos: {
             lat: 8.5583,
@@ -54,10 +54,11 @@ var locat = [];
 var query;
 
 
-
+//Viewmodel
 var viewModel = function() {
 
     var self = this;
+    //Create observable array
     self.locat = ko.observableArray();
     for (var i = 0; i < locations.length; i++) {
         self.locat.push(locations[i]);
@@ -66,7 +67,7 @@ var viewModel = function() {
 
     //console.log(this.locat);
     self.query = ko.observable('');
-    //From GitHub:
+    //From GitHub: Filter the array
    
    self.listClicker = function(locations){
    	new google.maps.event.trigger(locations.marker,"click");
@@ -95,5 +96,6 @@ var viewModel = function() {
     });
 };
 var view = new viewModel();
+//Apply bindings
 ko.applyBindings(view);
 
