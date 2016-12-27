@@ -87,18 +87,12 @@ function addContentwiki(marker) {
 var content,streetview,add;
 function populateInfoWindow(marker, newInfo) {
     newInfo.marker = marker;
-    if (marker.url != undefined) {         
-        var service = new google.maps.places.PlacesService(map);
-        service.getDetails(marker.place_id, callback);
-        function callback(place, status) {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
-            //createMarker(place);
-            console.log(status);
-        }
-        }
-        
-        newInfo.setContent(this.add);
-        console.log(this.add);
+    if (marker.url != undefined) {
+        content = '<div><h3>' + marker.title + '<a href="' + marker.url + '">' + ' Look ' + '</a>';         
+        streetview = '<img class="backgnd" src="http://maps.googleapis.com/maps/api/streetview?size=100x100&location=' + marker.position.lat+ ',' + marker.position.lng + '&key=AIzaSyCOgFFaPBZrnWy1pT6plIk6ezCfAv6L0aY">';
+        add= content +'<div> ' + streetview + '</div>';
+        newInfo.setContent(add);
+        console.log(add);
     } else
         newInfo.setContent("INfo not available");
     newInfo.open(map, marker);
