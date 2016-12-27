@@ -87,10 +87,16 @@ function addContentwiki(marker) {
 var content,streetview,add;
 function populateInfoWindow(marker, newInfo) {
     newInfo.marker = marker;
-    if (marker.url != undefined) {
-        this.content = '<div><h3>' + marker.title + '<a href="' + marker.url + '">' + 'Look' + '</a>';         
-        this.streetview = '<img class="backgnd" src="http://maps.googleapis.com/maps/api/streetview?size=100x100&location=' + marker.position+ '&key=AIzaSyCOgFFaPBZrnWy1pT6plIk6ezCfAv6L0aY">';
-        this.add= content + streetview;
+    if (marker.url != undefined) {         
+        var service = new google.maps.places.PlacesService(map);
+        service.getDetails(marker.place_id, callback);
+        function callback(place, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+            //createMarker(place);
+            console.log(status);
+        }
+        }
+        
         newInfo.setContent(this.add);
         console.log(this.add);
     } else
