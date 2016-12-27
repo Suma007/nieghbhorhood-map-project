@@ -64,7 +64,7 @@ var viewModel = function() {
 
     //console.log(this.locat);
     self.query = ko.observable('');
-
+    //From GitHub:
    
     //filter the items using the filter text
     self.filteredItems = ko.computed(function() {
