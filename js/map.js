@@ -90,10 +90,11 @@ function populateInfoWindow(marker, newInfo) {
     if (marker.url != undefined) {
         content = '<div><h3>' + marker.title + '<br><hr><a href="' + marker.url + '">' + ' Look ' + '</a>';         
         //Add Streetview
-        streetview = '<img class="backgnd" src="http://maps.googleapis.com/maps/api/streetview?size=100x100&location=' + marker.position.lat+ ',' + marker.position.lng + '&key=AIzaSyCOgFFaPBZrnWy1pT6plIk6ezCfAv6L0aY">';
+        streetview = '<img class="backgnd" src="http://maps.googleapis.com/maps/api/streetview?size=300x100&location=' + marker.title + '&key=AIzaSyDuXp8gXS7Y97AxP8lqmx_hhmruCsdxVZI">';
         add= content +'<div> ' + streetview + '</div>';
         newInfo.setContent(add);
         console.log(add);
+        //console.log(marker.pos);
     } else
         newInfo.setContent("INfo not available");
     newInfo.open(map, marker);
