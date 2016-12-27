@@ -3,17 +3,16 @@ var map;
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {
-            lat: 8.524139,
-            lng: 76.936638
+            lat: 10.8505,
+            lng: 76.2711
         },
-        zoom: 15
+        zoom: 10
     });
     var newInfo = new google.maps.InfoWindow();
     addmarker();
     
 
 }
-var markers = [];
 function addmarker() {
     var bound = new google.maps.LatLngBounds();
 
@@ -52,7 +51,7 @@ function addmarker() {
 
 function toggleBounce(marker) {
     //This makes sure that all markers have stopped bouncing first
-    for (var i = 0; i < markers.length; i++) {
+    for (var i = 0; i < locations.length; i++) {
         locations[i].marker.setAnimation(null);
     };
     //If the marker is already animated, stop animation
@@ -85,14 +84,15 @@ function addContentwiki(marker) {
 }
 
 //var newInfo = new google.maps.InfoWindow();
-
+var content,streetview,add;
 function populateInfoWindow(marker, newInfo) {
     newInfo.marker = marker;
     if (marker.url != undefined) {
-        var content = '<div> <h3>' + marker.title + '</h3><div> Address=' + marker.address+ '</div><div> Contact Number: ' + marker.contact+ '<div> Look: <a href="' + marker.url + '">' + marker.url + '</a></div>';         
-        var streetview = '<img class="backgnd" src="http://maps.googleapis.com/maps/api/streetview?size=100x100&location=' + marker.position+ '&key=AIzaSyCOgFFaPBZrnWy1pT6plIk6ezCfAv6L0aY">';
-        var add= content + streetview;
-        newInfo.setContent(content);
+        this.content = '<div><h3>' + marker.title + '<a href="' + marker.url + '">' + 'Look' + '</a>';         
+        this.streetview = '<img class="backgnd" src="http://maps.googleapis.com/maps/api/streetview?size=100x100&location=' + marker.position+ '&key=AIzaSyCOgFFaPBZrnWy1pT6plIk6ezCfAv6L0aY">';
+        this.add= content + streetview;
+        newInfo.setContent(this.add);
+        console.log(this.add);
     } else
         newInfo.setContent("INfo not available");
     newInfo.open(map, marker);
@@ -102,9 +102,10 @@ function populateInfoWindow(marker, newInfo) {
       newInfo.marker = null;
       //Makes sure the animation of the marker is stopped if the infoWindow close button is clicked
       marker.setAnimation(null);
-      map.setZoom(15);
+      map.setZoom(10);
     });
 }
+
 
 
 

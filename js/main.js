@@ -26,18 +26,18 @@ var locations = [{
     },
     {
         pos: {
-            lat: 8.5028,
-            lng: 76.9513
+            lat: 10.0889,
+            lng: 77.0595
         },
-        title: 'Palayam',
+        title: 'Munnar',
         place_id: 'ChIJm80qrr67BTsR4heEcbyBbE0'
     },
     {
         pos: {
-            lat: 8.4909,
-            lng: 76.9527
+            lat: 8.7379,
+            lng: 76.7163
         },
-        title: 'Thampanoor',
+        title: 'Varkala',
         place_id: 'ChIJ6akR5KW7BTsRYnHfM-clGtk'
     },
     {
@@ -47,18 +47,110 @@ var locations = [{
         },
         title: 'Vellayambalam',
         place_id: 'ChIJ3fyLN827BTsRstmaHAF_rBM'
-    }
+    },
 ];
 
 var locat = [];
 var query;
+
+function addmarker() {
+    var bound = new google.maps.LatLngBounds();
+
+    for (i = 0; i < locations.length; i++) {
+        var pos = locations[i].pos;
+        var title = locations[i].title;
+        locations[i].marker = new google.maps.Marker({
+            position: pos,
+            map: map,
+            title: title,
+            animation: google.maps.Animation.DROP,
+            id: i,
+            visible: true,
+            draggable: true,
+            url:''
+        });
+        
+        bound.extend(locations[i].marker.position);
+        var newInfo = new google.maps.InfoWindow();
+
+        locations[i].marker.addListener('click', function() {
+            // body...
+            console.log(this.title);
+
+            populateInfoWindow(this, newInfo)
+        });
+        locations[i].marker.addListener('click', function() {
+            toggleBounce(this);
+        });
+         addContentwiki(locations[i].marker);
+
+    }
+    map.fitBounds(bound);
+    map.setCenter(bound.getCenter());
+}
+
+function toggleBounce(marker) {
+    //This makes sure that all markers have stopped bouncing first
+    for (var i = 0; i < locations.length; i++) {
+        locations[i].marker.setAnimation(null);
+    };
+    //If the marker is already animated, stop animation
+    if (marker.getAnimation() !== null) {
+        marker.setAnimation(null);
+    } else {
+        //Otherwise, set animation on this marker
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+    }
+}
+
+function addContentwiki(marker) {
+    // body...
+
+    var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.title + '&format=json&callback=wikiCallback';
+    var timeout = setTimeout(function() {
+        alert("EROORRR WIKI NOT FOUND");
+    }, 8000);
+    $.ajax({
+        url: wikiUrl,
+        dataType: 'jsonp',
+        success: function(response) {
+            // do something with data
+            marker.url = response[3][0];
+            console.log(marker.url);
+            clearTimeout(timeout);
+        }
+
+    });
+}
+
+//var newInfo = new google.maps.InfoWindow();
+
+function populateInfoWindow(marker, newInfo) {
+    newInfo.marker = marker;
+    if (marker.url != undefined) {
+        var content = '<div> <h3>' + marker.title + '</h3><div> Address=' + marker.address+ '</div><div> Contact Number: ' + marker.contact+ '<div> Look: <a href="' + marker.url + '">' + marker.url + '</a></div>';         
+        var streetview = '<img class="backgnd" src="http://maps.googleapis.com/maps/api/streetview?size=100x100&location=' + marker.position+ '&key=AIzaSyCOgFFaPBZrnWy1pT6plIk6ezCfAv6L0aY">';
+        var add= content + streetview;
+        newInfo.setContent(content);
+    } else
+        newInfo.setContent("INfo not available");
+    newInfo.open(map, marker);
+    map.setZoom(18);
+    map.setCenter(marker.position);
+    newInfo.addListener('closeclick', function() {
+      newInfo.marker = null;
+      //Makes sure the animation of the marker is stopped if the infoWindow close button is clicked
+      marker.setAnimation(null);
+      map.setZoom(10);
+    });
+}
 
 var viewModel = function() {
 
     var self = this;
     self.locat = ko.observableArray();
     for (var i = 0; i < locations.length; i++) {
-        self.locat.push(locations[i].title);
+        self.locat.push(locations[i]);
         console.log(self.locat()[i]);
     }
 
@@ -66,34 +158,28 @@ var viewModel = function() {
     self.query = ko.observable('');
     //From GitHub:
    
+   self.listClicker = function(locations){
+   	new google.maps.event.trigger(locations.marker,"click");
+   }
     //filter the items using the filter text
     self.filteredItems = ko.computed(function() {
-        //if no value has been entered, just return the observable array and set the marker to visable
         if (!self.query()) {
-            // loop through locations
-            self.locat().forEach(function(location) {
-                // if marker poperty exists its sets the visibility to true. It won't exist on load, but it WILL exist after the page has loaded and you have typed in the filter box and then cleared it
+            self.locat().forEach(function(locations) {
                 if (locations.marker) {
                     locations.marker.setVisible(true);
                 }
             });
             return self.locat();
         } else {
-            //the variable filter is holding the results of the user input into filter and then converting it to all lower case
             var filter = self.query().toLowerCase();
-            //returns an array that contains only those items in the array that is being filtered that pass the true/false test inside the filter
             return ko.utils.arrayFilter(self.locat(), function(item) {
-                var result = item.toLowerCase().indexOf(query);
-                //If there were no matches between the filter and the list, hide the marker
+                var result = item.title.toLowerCase().indexOf(filter);
                 if (result < 0) {
                     item.marker.setVisible(false);
-                    //If there were matches, show the marker
                 } else {
                     item.marker.setVisible(true);
                 }
-                //Based on how indexOf works, if you have a match at all, the result must be 0 or greater becuase 0 is the lowest index number.
-                //So if you have any result, it will be greater than -1 and so returns true. Otherwise it returns false
-                return item.name.toLowerCase().indexOf(query) > -1;
+                return item.title.toLowerCase().indexOf(filter) > -1;
             });
         }
     });
