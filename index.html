@@ -1,67 +1,71 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title>Neighbourhood Map</title>
-	<link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css">
-	<link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<style type="text/css">
-		#map {
-			width: 100%;
-			position: absolute;
-			left: 0px;
-			height: 100%;
-			right: 100px;
-			bottom: 0px;
-			top: 50px;
-			margin-right: 70px; 
-		}
-    .backgnd {
-      opacity: 0.2;
-
-    }
-
-	</style>
+    <title>Neighbourhood Map</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.7-dist/css/bootstrap-theme.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        #map {
+            width: 100%;
+            position: absolute;
+            left: 0px;
+            height: 100%;
+            right: 100px;
+            bottom: 0px;
+            top: 50px;
+            margin-right: 70px;
+        }
+        
+        .backgnd {
+            opacity: 0.2;
+        }
+    </style>
 </head>
+
 <body>
-	<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Neighbourhood Map </a>
-    </div>
+                <a class="navbar-brand" href="#">Neighbourhood Map </a>
+            </div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="file:///F:/nieghbhorhood%20map%20project/index.html">Home <span class="sr-only"></span></a></li>
-        <li class="dropdown">
-          <input type="text" class="dropdown-toggle form-control" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" placeholder="Select" data-bind="textInput: query" autocomplete="on">List
-           <span class="caret"></span></a>
-          <ul class="dropdown-menu" data-bind="foreach: filteredItems" >
-            <li role="button" data-bind="text: title, click: $parent.listClicker " id="list-places"></li>
-          </ul>
-        </li>
-      </ul>
-      </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
-	<div id="map"></div>
-	<script type="text/javascript" src="js/jQuery.js"></script>
-  <script type="text/javascript" src="js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="js/knockout-3.4.1.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCOgFFaPBZrnWy1pT6plIk6ezCfAv6L0aY&v=3&callback=initMap" onerror="googleError()"></script>
-  <script type="text/javascript" src="js/map.js"></script>
-  <script type="text/javascript" src="js/main.js"></script>
-  
-  
-     
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="file:///F:/nieghbhorhood%20map%20project/index.html">Home <span class="sr-only"></span></a></li>
+                    <li class="dropdown">
+                        <input type="text" class="dropdown-toggle form-control" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" placeholder="Select" data-bind="textInput: query" autocomplete="on">List
+                        <span class="caret"></span></a>
+                        <ul class="dropdown-menu" data-bind="foreach: filteredItems">
+                            <li role="button" data-bind="text: title, click: $parent.listClicker " id="list-places"></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    <main><div id="map"></div></main>
+    <script src="js/jQuery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/knockout-3.4.1.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/main.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCOgFFaPBZrnWy1pT6plIk6ezCfAv6L0aY&v=3&callback=initMap" onerror="googleError()"></script>
+    
+
+
 </body>
+
 </html>

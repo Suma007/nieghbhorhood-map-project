@@ -67,20 +67,23 @@ function addContentwiki(marker) {
     // body...
 
     var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.title + '&format=json&callback=wikiCallback';
-    var timeout = setTimeout(function() {
-        alert("EROORRR WIKI NOT FOUND");
-    }, 8000);
+   
     $.ajax({
         url: wikiUrl,
-        dataType: 'jsonp',
-        success: function(response) {
+        dataType: 'jsonp'
+    }).done(function(response) {
             // do something with data
+            if (response[3][0]===null) {
+                alert("No data");
+            }
             marker.url = response[3][0];
             console.log(marker.url);
-            clearTimeout(timeout);
-        }
+            //clearTimeout(timeout);
+        }).fail(function(jqXHR, textStatus){
+            alert("EROORRR WIKI NOT FOUND");
+        });
 
-    });
+    
 }
 
 //var newInfo = new google.maps.InfoWindow();

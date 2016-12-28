@@ -68,11 +68,11 @@ var viewModel = function() {
     //console.log(this.locat);
     self.query = ko.observable('');
     //From GitHub: Filter the array
-   
-   self.listClicker = function(locations){
-   	new google.maps.event.trigger(locations.marker,"click");
-   }
-    //filter the items using the filter text
+
+    self.listClicker = function(locations) {
+            new google.maps.event.trigger(locations.marker, "click");
+        }
+        //filter the items using the filter text
     self.filteredItems = ko.computed(function() {
         if (!self.query()) {
             self.locat().forEach(function(locations) {
@@ -98,4 +98,3 @@ var viewModel = function() {
 var view = new viewModel();
 //Apply bindings
 ko.applyBindings(view);
-
