@@ -53,7 +53,6 @@ var locations = [{
 var locat = [];
 var query;
 
-
 //Viewmodel
 var viewModel = function() {
 
@@ -70,9 +69,9 @@ var viewModel = function() {
     //From GitHub: Filter the array
 
     self.listClicker = function(locations) {
-            new google.maps.event.trigger(locations.marker, "click");
-        }
-        //filter the items using the filter text
+        new google.maps.event.trigger(locations.marker, "click");
+    };
+    //filter the items using the filter text
     self.filteredItems = ko.computed(function() {
         if (!self.query()) {
             self.locat().forEach(function(locations) {

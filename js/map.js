@@ -1,4 +1,4 @@
-var map;
+var map,newInfo;
 //Initialise Map
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -8,16 +8,13 @@ function initMap() {
         },
         zoom: 10
     });
-    var newInfo = new google.maps.InfoWindow();
-    addmarker();
-    
-
+   addMarkers();
 }
 //Add Markers
-function addmarker() {
+function addMarkers() {
     var bound = new google.maps.LatLngBounds();
 
-    for (i = 0; i < locations.length; i++) {
+    for(var i=0;i<locations.length;i++) {
         var pos = locations[i].pos;
         var title = locations[i].title;
         locations[i].marker = new google.maps.Marker({
@@ -28,22 +25,21 @@ function addmarker() {
             id: i,
             visible: true,
             draggable: true,
-            url:''
+            url: ''
         });
-        
-        bound.extend(locations[i].marker.position);
-        var newInfo = new google.maps.InfoWindow();
 
+        bound.extend(locations[i].marker.position);
+        newInfo = new google.maps.InfoWindow();
         locations[i].marker.addListener('click', function() {
             // body...
             console.log(this.title);
 
-            populateInfoWindow(this, newInfo)
+            populateInfoWindow(this, newInfo);
         });
         locations[i].marker.addListener('click', function() {
             toggleBounce(this);
         });
-         addContentwiki(locations[i].marker);
+        addContentwiki(locations[i].marker);
 
     }
     map.fitBounds(bound);
@@ -52,9 +48,9 @@ function addmarker() {
 
 //Add animation
 function toggleBounce(marker) {
-    for (var i = 0; i < locations.length; i++) {
-        locations[i].marker.setAnimation(null);
-    };
+    locations.forEach(function(locations){
+        locations.marker.setAnimation(null);
+    });
     if (marker.getAnimation() !== null) {
         marker.setAnimation(null);
     } else {
@@ -67,47 +63,49 @@ function addContentwiki(marker) {
     // body...
 
     var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.title + '&format=json&callback=wikiCallback';
-   
+
     $.ajax({
         url: wikiUrl,
         dataType: 'jsonp'
     }).done(function(response) {
-            // do something with data
-            if (response[3][0]===null) {
-                alert("No data");
-            }
-            marker.url = response[3][0];
-            console.log(marker.url);
-            //clearTimeout(timeout);
-        }).fail(function(jqXHR, textStatus){
-            alert("EROORRR WIKI NOT FOUND");
-        });
+        // do something with data
+        if (response[3][0] === null) {
+            alert("No data");
+        }
+        marker.url = response[3][0];
+        console.log(marker.url);
+        //clearTimeout(timeout);
+    }).fail(function(jqXHR, textStatus) {
+        alert("ERROR WIKI NOT FOUND");
+    });
 
-    
+
 }
 
-//var newInfo = new google.maps.InfoWindow();
-var content,streetview,add;
+var content, streetview, add;
+
 function populateInfoWindow(marker, newInfo) {
     newInfo.marker = marker;
     if (marker.url != undefined) {
-        content = '<div><h3>' + marker.title + '<br><hr><a href="' + marker.url + '">' + ' Look ' + '</a>';         
+        //Add Wiki link
+        wiki = '<div><h3>' + marker.title + '<br><hr><a target= "_blank" href="' + marker.url + '">' + ' Look ' + '</a>';
         //Add Streetview
         streetview = '<img class="backgnd" src="http://maps.googleapis.com/maps/api/streetview?size=300x100&location=' + marker.title + '&key=AIzaSyDuXp8gXS7Y97AxP8lqmx_hhmruCsdxVZI">';
-        add= content +'<div> ' + streetview + '</div>';
+        add = wiki + '<div> ' + streetview + '</div>';
         newInfo.setContent(add);
         console.log(add);
         //console.log(marker.pos);
-    } else
-        newInfo.setContent("INfo not available");
+    } else{
+        newInfo.setContent("Info not available");
+    }
     newInfo.open(map, marker);
     map.setZoom(18);
     map.setCenter(marker.position);
     newInfo.addListener('closeclick', function() {
-      newInfo.marker = null;
-      //Makes sure the animation of the marker is stopped if the infoWindow close button is clicked
-      marker.setAnimation(null);
-      map.setZoom(10);
+        newInfo.marker = null;
+        //Makes sure the animation of the marker is stopped if the infoWindow close button is clicked
+        marker.setAnimation(null);
+        map.setZoom(8);
     });
 }
 
